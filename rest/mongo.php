@@ -16,7 +16,7 @@
   
      function __construct() {
        //$this->conn = new Mongo("mongodb://{$this->user}:{$this->pass}@{$this->host}/{$this->base}");
-       $this->conn = new MongoDB\Client("mongodb://{$this->user}:{$this->pass}@{$this->host}/{$this->base}");    
+       //$this->conn = new MongoDB\Client("mongodb://{$this->user}:{$this->pass}@{$this->host}/{$this->base}");    
        //$this->dbase = $this->conn->selectDB($this->base);
        //$this->collection = $this->dbase->selectCollection($this->coll);
        $this->collection = $this->conn->{$this->base}->{$this->coll};
