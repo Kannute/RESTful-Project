@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang = "pl">
+<head>
+	<meta charset="utf-8">
+	<title>Dane medyczne</title>
+	<link type="text/css" rel="stylesheet" href="styles.css">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script type="text/javascript" src="rest.js"></script>
+</head>
+
+<body>
+
+	<nav>
+		<ul>
+			<li onclick="data_offline_form()" id="offline_data_button">Wprowadzanie danych offline</li>
+			<li onclick="show_data_offline()" id="show_offline_button">Wykaz danych offline</li>
+			<li onclick="login_form()" id="log_button">Logowanie</li>
+			<li onclick="register_form()" id="register_button">Rejestracja</li>
+			<li onclick="show_data_online()" id="show_data_button" style="display: none;">Wykaz danych online</li>
+			<li onclick="data_online_form()" id="online_data_button" style="display: none;">Wprowadzanie danych</li>
+			<li onclick="logout_user()" id="logout_button" style="display: none;">Wylogowanie</li>
+		</ul>
+	</nav>
+
+	<div id="header">
+		<h2>Dane książek w magazynie księgarni</h2>
+	</div>
+
+	<div id="data">
+
+	</div>
+
+	<div id="chart" style="display: none;">
+
+	</div>
+
+	
+
+	<div id="conn_info">
+		<img src="" id="status" alt="status" style="display: none" width="25px" height="25px">
+		<p id="status_info">Sprawdzanie stanu połączenia przeglądarki</p>
+	</div>
+
+	<footer>
+    <p>Kacper Łuka <br>
+    Techniki Internetowe 2021
+    </p>
+	</footer>
+
+
+</body>	
