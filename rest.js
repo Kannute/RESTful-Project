@@ -274,7 +274,7 @@ function generate_chart(months){
 
 
 
-/* Logowanie sie do systemu */
+/* Logowanie i wylogowywanie sie z systemu */
 
 function logout_user(){
     var session_id = get_cookies();
@@ -298,6 +298,164 @@ function logout_user(){
             }
         }
     })
-    
+
     $("#chart").css("display", "none");
 }
+
+
+function login_form(){
+
+    if(!navigator.onLine){
+        alert("Brak połączenia z internetem");
+    }
+
+    let form_html = "<form class='input'>" +
+    "<input type='text' name='login' placeholder='login' required><br>" +
+    "<input type='password' name='password' placeholder='haslo' required><br>" +
+    "<input type='button' value='Zaloguj' onclick='log_user(this.form)'>" +
+    "</form>"
+    $("#data").html(form_html);
+}
+
+function register_form(){
+    let form_html = "<form class='input'>" +
+    "<input type='text' name='login' placeholder='login' required><br>" +
+    "<input type='password' name='password' placeholder='haslo' required><br>" +
+    "<input type='button' value='Rejestracja' onclick='add_user(this.form)'>" +
+    "</form>"
+    $("#data").html(form_html);
+}
+
+
+function add_user(form){
+
+    if(check_registration_form(form)){
+        var user_data = {}
+        user_data.username = form.login.value
+        user_data.password = form.password.value
+        data_to_send = JSON.stringify(user_data)
+        $.ajax({
+            type : "POST",
+            url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/login",
+            data : data_to_send,
+            success : function(response) {
+                alert(response);
+                if (response["status"] == "ok") {
+                    alert("Zalogowano!");
+                    onlineMenu();
+                    clear_local_database();
+                    set_cookies(response["sessionID"]);
+                } else {
+                    alert(response["msg"]);
+                }
+            },
+            error : function() {
+                alert("Wystąpił błąd przy tworzeniu XMLHttpRequest");
+            }
+        })
+    }
+}
+
+
+
+function onlineMenu(){
+    $("#offline_data_button").css("display", "none");
+    $("#show_offline_button").css("display", "none");
+    $("#log_button").css("display", "none");
+    $("#register_button").css("display", "none");
+    $("#show_data_button").css("display", "inline");
+    $("#online_data_button").css("display", "inline");
+    //$("#synchronise_button").css("display", "inline");
+    $("#logout_button").css("display", "inline");
+    $("#data").html("");
+}
+
+
+function offlineMenu(){
+    $("#offline_data_button").css("display", "inline");
+    $("#show_offline_button").css("display", "inline");
+    $("#log_button").css("display", "inline");
+    $("#register_button").css("display", "inline");
+    $("#show_data_button").css("display", "none");
+    $("#online_data_button").css("display", "none");
+    //$("#synchronise_button").css("display", "none");
+    $("#logout_button").css("display", "none");
+    $("#data").html("");
+}
+
+
+function check_registration_form(form) {
+    if (form.login.value == "" || form.password.value == "") {
+        alert("Wypełnij wszystkie pola");
+        return false;
+    }
+    if (form.login.value.length <= 1 || form.password.value.length <= 5) {
+        alert("Login musi mieć conajmniej 1 znak! Hasło musi być dłuższe niż pięć znaków!");
+        return false;
+    }
+    return true;
+}
+
+
+function updateStatus(event) {
+
+    var status_text = document.getElementById("status_info");
+
+    if (navigator.onLine) {
+        status_text.innerHTML = "Połączono z internetem!.";
+    } else {
+        status_text.innerHTML = "Brak połączenia internetowego!";
+    }
+}
+
+
+
+function create_cookies() {
+    let array = {};
+    let session_id = get_cookies();
+    alert("SessionID: " + session_id);
+    array.sessionID = session_id;
+    data_to_send = JSON.stringify(array);
+    $.ajax({
+        type: "POST",
+        url: "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/session",
+        data : data_to_send,
+        success : function(response) {
+            if (response["status"] == "ok") {
+                onlineMenu();
+            } else {
+                alert(response);
+                alert(response["msg"]);
+                offlineMenu();
+            }
+        },
+        error : function() {
+            console.log("Failed to create cookies");
+        }
+    })
+}
+
+
+function set_cookies(value) {
+    document.cookie = "sessionID=" + value + "; path=/";
+}
+
+
+function get_cookies() {
+
+    let tmp;
+    let browser_cookies = document.cookie.split(';');
+    for (var i = 0; i < browser_cookies.length; i++) {
+        tmp = browser_cookies[i];
+        let remove_spaces = 0;
+        while (tmp.charAt(remove_spaces) == ' ') {
+            remove_spaces = remove_spaces + 1;
+        }
+        tmp = tmp.substring(remove_spaces, tmp.length - remove_spaces);
+        if (tmp.indexOf("sessionID=") == 0) {
+            return tmp.substring("sessionID=".length, tmp.length);
+        }
+    }
+    return "";
+}
+
