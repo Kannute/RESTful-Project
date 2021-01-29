@@ -459,3 +459,30 @@ function get_cookies() {
     return "";
 }
 
+function clear_local_database() {
+    var count = 0;
+    var trans = db.transaction("ksiazka", "readwrite");
+    var storage = trans.objectStore("ksiazka");
+    storage.openCursor().onsuccess = async function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+            var array = {};
+            array.data = cursor.value.data;
+            array.czas = cursor.value.czas;
+            array.objawy = cursor.value.objawy;
+            array.diagnoza = cursor.value.diagnoza;
+
+            data_to_send = JSON.stringify(array);
+            $.ajax({
+                type : "POST",
+                url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/insert",
+                data : data_to_send
+            })
+            cursor.delete();
+            count = count + 1;
+            cursor.continue();
+        }
+    }
+    alert("Zsynchronizowano dane");
+}
+
