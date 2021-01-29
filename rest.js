@@ -49,6 +49,16 @@ $("document").ready( ()=>{
 
 function data_offline_form(){
     
+    var date = new Date();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+   
+
     let my_form = "<div class='input_offline'><h3 style='text-alignL center;'>Poniżej wprowadź dane książki:</h3>" +
     "<form name='insert_data' ><table>" +
     "<tr><td>Data:</td><td><input class='form_input' type='date' name='data' value=" + year + "-" + month + "-" + day + "></input></td></tr>" + 
@@ -59,11 +69,20 @@ function data_offline_form(){
     "</table></form></div>" +
     "<div id='result'></div>";
 
-    $("data").html(my_form);
+    $("#data").html(my_form);
 }
 
 
 function data_online_form(){
+    var date = new Date();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    
 
     let my_form = "<div class='input_offline'><h3 style='text-alignL center;'>Poniżej wprowadź dane książki:</h3>" +
     "<form name='insert_data' ><table>" +
@@ -84,7 +103,7 @@ function data_online_form(){
 function validate_form(form){
     if(form.data.value == "" || form.czas.value == "" || form.autor.value == "" || form.tytul.value == ""){
         console.log("Invalid data entered!");
-        $("#result").html("");
+        $("#result").html("BLEDNE DANE!");
         return false;
     }
 
@@ -100,7 +119,7 @@ function insert_data_offline(form){
         let arr = {}
         arr.data = form.data.value;
         arr.czas = form.czas.value;
-        arr.tytul = form.autor.value;
+        arr.tytul = form.tytul.value;
         arr.autor = form.autor.value;
 
         var tran = db.transacition("ksiazka", "readwrite");
@@ -118,7 +137,7 @@ function insert_data_online(form){
         let arr = {}
         arr.data = form.data.value;
         arr.czas = form.czas.value;
-        arr.tytul = form.autor.value;
+        arr.tytul = form.tytul.value;
         arr.autor = form.autor.value;
 
         var dane = JSON.stringify(arr);
@@ -336,20 +355,45 @@ function add_user(form){
         var data_to_send = JSON.stringify(user_data)
         $.ajax({
             type : "POST",
-            url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/login",
+            url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/register",
             data : data_to_send,
             success : function(response) {
-                alert(response);
+                //alert(response);
                 if (response["status"] == "ok") {
-                    alert("Zalogowano!");
-                    onlineMenu();
-                    clear_local_database();
-                    set_cookies(response["sessionID"]);
+                    alert("Zarejstrowano użytkownika!");
                 } else {
-                    alert(response["msg"]+"Tutaj");
+                    alert(response["msg"]);
                 }
             },
             error : function() {
+                alert("Wystąpił błąd przy tworzeniu XMLHttpRequest");
+            }
+        })
+    }
+}
+
+
+function log_user(form){
+    if(check_registration_form(form)){
+        var user_data = {};
+        user_data.username = form.login.value;
+        user_data.password = form.password.value;
+        var data_to_send = JSON.stringify(user_data);
+        $.ajax({
+            type: "POST",
+            url: "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/login",
+            data: data_to_send,
+            success : function(response){
+                if(response["status"] == "ok"){
+                    alert("Użytkownik zalogowany!");
+                    onlineMenu();
+                    clear_local_database();
+                    set_cookies(response["sessionID"]);
+                }else{
+                    alert(response["msg"]);
+                }
+            },
+            error : function(){
                 alert("Wystąpił błąd przy tworzeniu XMLHttpRequest");
             }
         })
