@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /~8mikolajczyk/projekt2/rest
+RewriteBase /~8luka/projekt2/rest
   
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-s

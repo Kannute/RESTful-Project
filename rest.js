@@ -223,7 +223,7 @@ function show_table(){
         url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/get_all_data",
         success : function(response) {
             response.forEach((item) => {
-                list = list + "<tr><th>" + item.data + '</th><th>' + item.czas + '</th><th>' + item.objawy + '</th><th>' + item.diagnoza + '</th></tr>';
+                list = list + "<tr><th>" + item.data + '</th><th>' + item.czas + '</th><th>' + item.tytul + '</th><th>' + item.autor + '</th></tr>';
             })
             alert("Udało się pozyskać dane!");
             list = list + "</table></div>"
@@ -523,8 +523,8 @@ function clear_local_database() {
             var array = {};
             array.data = cursor.value.data;
             array.czas = cursor.value.czas;
-            array.objawy = cursor.value.objawy;
-            array.diagnoza = cursor.value.diagnoza;
+            array.tytul = cursor.value.tytul;
+            array.autor = cursor.value.autor;
 
             data_to_send = JSON.stringify(array);
             $.ajax({
