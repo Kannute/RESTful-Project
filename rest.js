@@ -75,7 +75,7 @@ function data_online_form(){
     "</table></form></div>" +
     "<div id='result'></div>";
 
-    $("#chart").css("display,", "none"));
+    $("#chart").css("display,", "none");
     $("#data").html(my_form);
 }
 
