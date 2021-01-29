@@ -333,7 +333,7 @@ function add_user(form){
         var user_data = {}
         user_data.username = form.login.value
         user_data.password = form.password.value
-        data_to_send = JSON.stringify(user_data)
+        var data_to_send = JSON.stringify(user_data)
         $.ajax({
             type : "POST",
             url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/login",
@@ -346,7 +346,7 @@ function add_user(form){
                     clear_local_database();
                     set_cookies(response["sessionID"]);
                 } else {
-                    alert(response["msg"]);
+                    alert(response["msg"]+"Tutaj");
                 }
             },
             error : function() {

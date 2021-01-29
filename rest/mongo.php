@@ -6,11 +6,11 @@ ini_set('display_errors', 'on');
 
 
 class db{
-    private $user = '8luka';
-    private $pass = 'pass8luka';
-    private $host = '172.20.44.25';
-    private $base = '8luka';
-    private $dataCollName = 'ksiazka';
+    private $user = "8luka";
+    private $pass = "pass8luka";
+    private $host = "172.20.44.25";
+    private $base = "8luka";
+    private $dataCollName = "ksiazka";
     private $userCollName = "users";
     private $sessionCollName = "session";
     private $conn;
@@ -58,8 +58,7 @@ class db{
         $cursor = $this->user_coll->find(array('username'=> $usernam, 'password'=> $pass));
         if($cursor->isDead()){
             return false;
-        }
-        else{
+        }else{
             $session_id = md5(uniqid($usernam, true));
             $start = date('Y-m-d H:i:s', time());
             $tmp = $this->session_coll->insertOne(array('sessionID'=> $session_id, 'start'=>$start));
@@ -71,8 +70,7 @@ class db{
         $tmp = $this->session_coll->find(array('sessionID'=> $session));
         if($tmp != NULL){
             $this->session_coll->deleteOne(array('sessionID'=>$session));
-        }
-        else{
+        } else{
             return false;
         }
         return true;
@@ -83,8 +81,7 @@ class db{
         $cursor = $this->user_coll->find(array('username'=>$user_data['username']));
         if($cursor->isDead()){
             $tmp = $this->user_coll->insertOne($user_data);
-        }
-        else{
+        }else{
             return false;
         }
         return true;
@@ -98,7 +95,7 @@ class db{
         }
         return false;
     }
-    
+
 };
 
 ?>
