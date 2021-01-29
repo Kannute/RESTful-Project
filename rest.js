@@ -63,7 +63,7 @@ function data_offline_form(){
     "<form name='insert_data' ><table>" +
     "<tr><td>Data:</td><td><input class='form_input' type='date' name='data' value=" + year + "-" + month + "-" + day + "></input></td></tr>" + 
     "<tr><td>Godzina:</td><td><input class='form_input' type='time' name='czas'></input></td></tr>" +
-    "<tr><td>Tytuł:</td><td><input class='form_input' type='text' name='tutul'></input></td></tr>" +
+    "<tr><td>Tytuł:</td><td><input class='form_input' type='text' name='tytul'></input></td></tr>" +
     "<tr><td>Autor:</td><td><input class='form_input' type='text' name='autor'></input></td></tr>" +
     "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insert_data_offline(this.form)'></td></tr>" +
     "</table></form></div>" +
@@ -88,9 +88,9 @@ function data_online_form(){
     "<form name='insert_data' ><table>" +
     "<tr><td>Data:</td><td><input class='form_input' type='date' name='data' value=" + year + "-" + month + "-" + day + "></input></td></tr>" + 
     "<tr><td>Godzina:</td><td><input class='form_input' type='time' name='czas'></input></td></tr>" +
-    "<tr><td>Tytuł:</td><td><input class='form_input' type='text' name='tutul'></input></td></tr>" +
+    "<tr><td>Tytuł:</td><td><input class='form_input' type='text' name='tytul'></input></td></tr>" +
     "<tr><td>Autor:</td><td><input class='form_input' type='text' name='autor'></input></td></tr>" +
-    "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insert_data_offline(this.form)'></td></tr>" +
+    "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insert_data_online(this.form)'></td></tr>" +
     "</table></form></div>" +
     "<div id='result'></div>";
 
@@ -101,9 +101,19 @@ function data_online_form(){
 
 
 function validate_form(form){
+    
     if(form.data.value == "" || form.czas.value == "" || form.autor.value == "" || form.tytul.value == ""){
-        console.log("Invalid data entered!");
-        $("#result").html("BLEDNE DANE!");
+        alert("Prosze wypelnic wszystkie pola")
+        //$("#result").html("BLEDNE DANE!");
+        return false;
+    }
+
+    let date_to_add = new Date(form.data.value);
+    let curr = new Date(Date.now());
+
+    if (date_to_add > curr) {
+        alert("Podaj prawidłową datę.");
+        $("#result").html("");
         return false;
     }
 
@@ -124,7 +134,7 @@ function insert_data_offline(form){
 
         var tran = db.transacition("ksiazka", "readwrite");
         var storage = tran.objectStore("ksiazka");
-
+        $("#result").html("Dane zostały ?");
         if(storage.put(arr)){
             $("#result").html("Dane zostały wprowadzone");
         }
