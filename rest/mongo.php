@@ -20,16 +20,10 @@ class db{
     private $session_coll;
   
 
-    function __construct()
-    {
-        //$this->conn = new Mongo("mongodb://{$this->user}:{$this->pass}@{$this->host}/{$this->base}");
+    function __construct(){
         $this->conn = new MongoDB\Client("mongodb://{$this->user}:{$this->pass}@{$this->host}/{$this->base}");    
-        //$this->dbase = $this->conn->selectDB($this->base);
         $this->data_coll = $this->conn->selectCollection($this->base, $this->dataCollName);
-        //$this->data_coll = $this->dbase->{$this->dataCollName};
         $this->user_coll = $this->conn->selectCollection($this->base, $this->userCollName);
-        //$this->user_coll = $this->dbase->{$this->userCollName};
-        //$this->session_coll = $this->dbase->{$this->sessionCollName};
         $this->session_coll = $this->conn->selectCollection($this->base, $this->sessionCollName);
     }
 

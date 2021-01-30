@@ -39,6 +39,7 @@ window.addEventListener("online", updateStatus);
 window.addEventListener("offline", updateStatus);
 
 
+
 $("document").ready( ()=>{
     updateStatus();
     init();
@@ -46,6 +47,46 @@ $("document").ready( ()=>{
 });
 
 /******  Funkcje ******/
+
+function updateStatus(event) {
+    /* Wyświetlanie na stronie stanu połączenia internetowego */
+    var status_text = document.getElementById("statusInfo");
+
+    if (navigator.onLine) {
+        status_text.innerHTML = "Połączono z internetem.";
+        $("#statusInfo").css("background-color","green");
+    } else {
+        status_text.innerHTML = "Brak połączenia internetowego.";
+        $("#statusInfo").css("background-color","red");
+    }
+}
+
+
+function offlineMenu(){
+    /* Wyświetlane możliwości dla użytkownika niezalogowanego */
+    $("#btnOfflineData").css("display", "inline");
+    $("#btnOfflineShow").css("display", "inline");
+    $("#btnLogin").css("display", "inline");
+    $("#btnRegister").css("display", "inline");
+    $("#btnOnlineShow").css("display", "none");
+    $("#btnOnlineData").css("display", "none");
+    $("#btnLogout").css("display", "none");
+    $("#dataDiv").html("");
+}
+
+function onlineMenu(){
+    /* Wyświetlane możliwości dla użytkownika zalogowanego */
+    $("#btnOfflineData").css("display", "none");
+    $("#btnOfflineShow").css("display", "none");
+    $("#btnLogin").css("display", "none");
+    $("#btnRegister").css("display", "none");
+    $("#btnOnlineShow").css("display", "inline");
+    $("#btnOnlineData").css("display", "inline");
+    $("#btnLogout").css("display", "inline");
+    $("#dataDiv").html("");
+}
+
+
 
 function offlineDataForm(){
     /* Generowanie formularza do wprowadzania danych offline */
@@ -105,9 +146,10 @@ function insertOffline(form){
 
         var tran = db.transacition("ksiazka", "readwrite");
         var storage = tran.objectStore("ksiazka");
-        $("#result").html("Dane zostały ?");
         if(storage.put(arr)){
-            $("#result").html("Dane zostały wprowadzone");
+            alert("Dane zostaly wprowadzone")
+        }else{
+            alert("Nie wprowadzono danych!")
         }
 
     }
@@ -136,8 +178,7 @@ function insertOnline(form){
                     }
                 },
                 error : function(response) {
-                    alert(response);
-                    alert("Wystąpił błąd podczas tworzenia XMLHttpRequest");
+                    alert("Wystąpił błąd podczas dodawania rekordu online");
                 }
             })
     }
@@ -147,8 +188,8 @@ function insertOnline(form){
 function offlineDataShow(){
     /* Pobranie danych offline */
 
-    let list = "<div class='data_table'>" +
-    "<h2>Wpis książek offline:</h2>" +
+    let list = "<div class='dataTableDiv'>" +
+    "<h2>Wykaz książek offline:</h2>" +
     "<table><tr><th>Data</th><th>Godzina</th><th>Tytuł</th><th>Autor</th></tr>";
 
 
@@ -167,7 +208,7 @@ function offlineDataShow(){
         }
     }
     storage.openCursor().onerror = function(event){
-        console.error("Wystąpił błąd podczas dodawania rekordu online");
+        console.error("Wystąpił błąd podczas wykazu rekordow offline");
     }
 }
 
@@ -241,14 +282,14 @@ function generateChart(months){
 
     $("#dataDiv").html("");
 
-    var chart = new CanvasJS.Chart("chart", {
+    var chart = new CanvasJS.Chart("chartDiv", {
 
-        theme: "dark2",
+        theme: "dark1",
         animationEnabled: true,
         title: {
             text : "Ilosc dostarczonych ksiazek w danym miesiacu"
         },
-        axisX:{
+        axisX: {
             title: "Miesiace"
         },
         axisY: {
@@ -367,6 +408,8 @@ function newUser(form){
 
 
 function userLogin(form){
+    /* Logowanie sie uzytkownika do bazy */
+
     if(registerValidation(form)){
 
         var user_data = {};
@@ -387,7 +430,7 @@ function userLogin(form){
                 }
             },
             error : function(){
-                alert("Wystąpił błąd przy tworzeniu XMLHttpRequest");
+                alert("Wystąpił błąd przy logowaniu uzytkownika");
             }
         })
     }
@@ -395,28 +438,6 @@ function userLogin(form){
 
 
 
-function onlineMenu(){
-    $("#btnOfflineData").css("display", "none");
-    $("#btnOfflineShow").css("display", "none");
-    $("#btnLogin").css("display", "none");
-    $("#btnRegister").css("display", "none");
-    $("#btnOnlineShow").css("display", "inline");
-    $("#btnOnlineData").css("display", "inline");
-    $("#btnLogout").css("display", "inline");
-    $("#dataDiv").html("");
-}
-
-
-function offlineMenu(){
-    $("#btnOfflineData").css("display", "inline");
-    $("#btnOfflineShow").css("display", "inline");
-    $("#btnLogin").css("display", "inline");
-    $("#btnRegister").css("display", "inline");
-    $("#btnOnlineShow").css("display", "none");
-    $("#btnOnlineData").css("display", "none");
-    $("#btnLogout").css("display", "none");
-    $("#dataDiv").html("");
-}
 
 
 function registerValidation(form) {
@@ -431,21 +452,37 @@ function registerValidation(form) {
     return true;
 }
 
+function localDBSync() {
+    /* Synchronizacja danych z bazą danych */
+    var count = 0;
+    var trans = db.transaction("ksiazka", "readwrite");
+    var storage = trans.objectStore("ksiazka");
+    storage.openCursor().onsuccess = async function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+            var array = {};
+            array.data = cursor.value.data;
+            array.czas = cursor.value.czas;
+            array.tytul = cursor.value.tytul;
+            array.autor = cursor.value.autor;
 
-function updateStatus(event) {
-
-    var status_text = document.getElementById("statusInfo");
-
-    if (navigator.onLine) {
-        status_text.innerHTML = "Połączono z internetem.";
-        $("#statusInfo").css("background-color","green");
-    } else {
-        status_text.innerHTML = "Brak połączenia internetowego.";
-        $("#statusInfo").css("background-color","red");
+            data_to_send = JSON.stringify(array);
+            $.ajax({
+                type : "POST",
+                url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/insert",
+                data : data_to_send
+            })
+            cursor.delete();
+            count = count + 1;
+            cursor.continue();
+        }
     }
+   
 }
 
 
+
+/* Pliki Cookies */
 
 function createCookies() {
     let array = {};
@@ -466,7 +503,7 @@ function createCookies() {
             }
         },
         error : function() {
-            alert("Blad przy tworzeniu ciasteczek")
+            console.log("Blad przy tworzeniu ciasteczek")
         }
     })
 }
@@ -495,30 +532,5 @@ function getCookies() {
     return "";
 }
 
-function localDBSync() {
-    var count = 0;
-    var trans = db.transaction("ksiazka", "readwrite");
-    var storage = trans.objectStore("ksiazka");
-    storage.openCursor().onsuccess = async function(event) {
-        var cursor = event.target.result;
-        if (cursor) {
-            var array = {};
-            array.data = cursor.value.data;
-            array.czas = cursor.value.czas;
-            array.tytul = cursor.value.tytul;
-            array.autor = cursor.value.autor;
 
-            data_to_send = JSON.stringify(array);
-            $.ajax({
-                type : "POST",
-                url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/insert",
-                data : data_to_send
-            })
-            cursor.delete();
-            count = count + 1;
-            cursor.continue();
-        }
-    }
-   
-}
 
