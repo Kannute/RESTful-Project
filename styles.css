@@ -4,15 +4,15 @@ html {
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: rgb(177,203,179);
-    background: linear-gradient(90deg, rgba(177,203,179,1) 0%, rgba(164,173,132,1) 21%, rgba(130,105,105,1) 100%); 
+    background-image: url("/images/bgimg.jpg");
     font-size: large;
 }
 
-#header {
+h2{
     text-align: center;
     margin-top: 8%;
-    font-size: 25px;
+    font-size: 30px;
+    font-style: italic;
 }
 
 nav {
@@ -25,34 +25,32 @@ nav {
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;
+    opacity:0.9;
 }
 
 nav ul {
     list-style-type: none;
     margin-left: auto;
     margin-right: auto;
+    
 }
 
 nav ul li {
     display: inline;
+    padding:20px;
     margin-left: 20px;
     margin-right: 50px;
+    border-radius: 16%;
+    border-color: bisque;
 }
 
 nav ul li:hover {
-    color: gray;
+    font-style:bold;
     opacity:0.7;
+    background-color:darkgray;
     transition:0.4s;
 }
 
-footer {
-    position: fixed;
-    bottom: 0;
-    text-align: center;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    font-size: 13px;
-}
 
 div #data{
     margin-left: auto;
@@ -62,14 +60,23 @@ div #data{
 }
 
 
-#conn_info {
+#connectionStatus {
     position: fixed;
     bottom: 80px;
 
 }
 
-#status_info {
+#statusInfo{
     display: inline;
 }
 
+form{
+    background-color: rgba(250, 235, 215,0.6);
+    display:inline-block;
+    text-align: left;
+    border-radius: 5%;
+}
 
+#inputDiv{
+    display:block;
+}

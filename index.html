@@ -15,39 +15,35 @@
 
 	<nav>
 		<ul>
-			<li onclick="data_offline_form()" id="offline_data_button">Wprowadzanie danych offline</li>
-			<li onclick="show_data_offline()" id="show_offline_button">Wykaz danych offline</li>
-			<li onclick="login_form()" id="log_button">Logowanie</li>
-			<li onclick="register_form()" id="register_button">Rejestracja</li>
-			<li onclick="show_data_online()" id="show_data_button" style="display: none;">Wykaz danych online</li>
-			<li onclick="data_online_form()" id="online_data_button" style="display: none;">Wprowadzanie danych</li>
-			<li onclick="logout_user()" id="logout_button" style="display: none;">Wylogowanie</li>
+			<li onclick="offlineDataForm()" id="btnOfflineData">Wprowadzanie książek offline</li>
+			<li onclick="show_data_offline()" id="btnOfflineShow">Wykaz książek offline</li>
+			<li onclick="login_form()" id="btnLogin">Zaloguj się</li>
+			<li onclick="register_form()" id="btnRegister">Zarejestruj się</li>
+			<li onclick="data_online_form()" id="btnOnlineData" style="display: none;">Wprowadzanie książek online</li>
+			<li onclick="show_data_online()" id="btnOnlineShow" style="display: none;">Wykaz książek online</li>
+			<li onclick="logout_user()" id="btnLogout" style="display: none;">Wyloguj się</li>
 		</ul>
 	</nav>
 
-	<div id="header">
-		<h2>Dane książek w magazynie księgarni</h2>
+	
+	<h2>Dane książek w magazynie księgarni</h2>
+	
+
+	<div id="dataDiv">
+
 	</div>
 
-	<div id="data">
-
-	</div>
-
-	<div id="chart" style="display: none;">
+	<div id="chartDiv" style="display: none;">
 
 	</div>
 
 	
 
-	<div id="conn_info">
-		<p id="status_info">Sprawdzanie stanu połączenia przeglądarki</p>
+	<div id="connectionStatus">
+		Status połączenia: <br>
+		<p id="statusInfo"> &nbsp; Sprawdzanie stanu połączenia przeglądarki</p>
 	</div>
 
-	<footer>
-    <p>Kacper Łuka <br>
-    Techniki Internetowe 2021
-    </p>
-	</footer>
 
 
 </body>	

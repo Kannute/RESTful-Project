@@ -33,87 +33,59 @@ function openDB(){
     }
 }
 
+/* Sprawdzenie stanu połączenia internetowego */
+
 window.addEventListener("online", updateStatus);
 window.addEventListener("offline", updateStatus);
-
 
 
 $("document").ready( ()=>{
     updateStatus();
     init();
-    create_cookies();
+    createCookies();
 });
 
+/******  Funkcje ******/
 
+function offlineDataForm(){
+    /* Generowanie formularza do wprowadzania danych offline */
 
-
-function data_offline_form(){
-    
-    var date = new Date();
-
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
-   
-
-    let my_form = "<div class='input_offline'><h3 style='text-alignL center;'>Poniżej wprowadź dane książki:</h3>" +
+    let my_form = "<div class='input_offline' id='inputDiv' style=' position: fixed;top: 50%;left: 50%; -webkit-transform: translate(-50%, -50%);  transform: translate(-50%, -50%);'><h3 style='text-align: center;'>Poniżej wprowadź dane książki:</h3>" +
     "<form name='insert_data' ><table>" +
-    "<tr><td>Data:</td><td><input class='form_input' type='date' name='data' value=" + year + "-" + month + "-" + day + "></input></td></tr>" + 
+    "<tr><td>Data:</td><td><input class='form_input' type='date' name='data'></input></td></tr>" + 
     "<tr><td>Godzina:</td><td><input class='form_input' type='time' name='czas'></input></td></tr>" +
     "<tr><td>Tytuł:</td><td><input class='form_input' type='text' name='tytul'></input></td></tr>" +
     "<tr><td>Autor:</td><td><input class='form_input' type='text' name='autor'></input></td></tr>" +
-    "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insert_data_offline(this.form)'></td></tr>" +
+    "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insertOffline(this.form)'></td></tr>" +
     "</table></form></div>" +
     "<div id='result'></div>";
 
-    $("#data").html(my_form);
+    $("#dataDiv").html(my_form);
 }
 
 
-function data_online_form(){
-    var date = new Date();
+function onlineDataForm(){
+    /* Generowanie formularza do wprowadzania danych online */
 
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
-    
-
-    let my_form = "<div class='input_offline'><h3 style='text-alignL center;'>Poniżej wprowadź dane książki:</h3>" +
+    let my_form = "<div class='input_online' id='inputDiv' style=' position: fixed;top: 50%;left: 50%; -webkit-transform: translate(-50%, -50%);  transform: translate(-50%, -50%);'><h3 style='text-align: center;'><h3 style='text-align: center;'>Poniżej wprowadź dane książki:</h3>" +
     "<form name='insert_data' ><table>" +
-    "<tr><td>Data:</td><td><input class='form_input' type='date' name='data' value=" + year + "-" + month + "-" + day + "></input></td></tr>" + 
+    "<tr><td>Data:</td><td><input class='form_input' type='date' name='data'></input></td></tr>" + 
     "<tr><td>Godzina:</td><td><input class='form_input' type='time' name='czas'></input></td></tr>" +
     "<tr><td>Tytuł:</td><td><input class='form_input' type='text' name='tytul'></input></td></tr>" +
     "<tr><td>Autor:</td><td><input class='form_input' type='text' name='autor'></input></td></tr>" +
-    "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insert_data_online(this.form)'></td></tr>" +
+    "<tr><td></td><td><input class='butt' type='button' value='Zapisz' onclick='insertOnline(this.form)'></td></tr>" +
     "</table></form></div>" +
     "<div id='result'></div>";
 
-    $("#chart").css("display,", "none");
-    $("#data").html(my_form);
+    $("#chartDiv").css("display,", "none");
+    $("#dataDiv").html(my_form);
 }
 
 
-
-function validate_form(form){
-    
+function formValidation(form){
+    /* Sprawdzanie poprawnosci wprowadzonych danych */
     if(form.data.value == "" || form.czas.value == "" || form.autor.value == "" || form.tytul.value == ""){
         alert("Prosze wypelnic wszystkie pola")
-        //$("#result").html("BLEDNE DANE!");
-        return false;
-    }
-
-    let date_to_add = new Date(form.data.value);
-    let curr = new Date(Date.now());
-
-    if (date_to_add > curr) {
-        alert("Podaj prawidłową datę.");
-        $("#result").html("");
         return false;
     }
 
@@ -121,11 +93,10 @@ function validate_form(form){
 }
 
 
-/* Dodawanie danych w trybie offline i online */
+function insertOffline(form){
+    /* Wprowadzanie danych offline */
 
-
-function insert_data_offline(form){
-    if(validate_form(form)){
+    if(formValidation(form)){
         let arr = {}
         arr.data = form.data.value;
         arr.czas = form.czas.value;
@@ -142,8 +113,10 @@ function insert_data_offline(form){
     }
 }
 
-function insert_data_online(form){
-    if(validate_form(form)){
+function insertOnline(form){
+    /* Wprowadzanie danych online */
+
+    if(formValidation(form)){
         let arr = {}
         arr.data = form.data.value;
         arr.czas = form.czas.value;
@@ -171,10 +144,9 @@ function insert_data_online(form){
 }
 
 
-/* Wykaz danych w trybie offline i online */
+function offlineDataShow(){
+    /* Pobranie danych offline */
 
-function show_data_offline(){
-        
     let list = "<div class='data_table'>" +
     "<h2>Wpis książek offline:</h2>" +
     "<table><tr><th>Data</th><th>Godzina</th><th>Tytuł</th><th>Autor</th></tr>";
@@ -191,7 +163,7 @@ function show_data_offline(){
             cursor.continue();
         }else{
             list = list + "</table></div>"
-            $("#data").html(list);
+            $("#dataDiv").html(list);
         }
     }
     storage.openCursor().onerror = function(event){
@@ -200,20 +172,24 @@ function show_data_offline(){
 }
 
 
-function show_data_online(){
+function onlineDataShow(){
+    /* Pobranie danych online */
+
     let list = "<div class='choose'>" +
     "<h2>Wykaz książek online:</h2>" +
-    "<button type='button' onclick='show_table()'>Wyświetl dane</button>" +
-    "<button type='button' onclick='draw_data()'>Rysuj wykres</button>" +
+    "<button type='button' onclick='generateTable()'>Wyświetl dane</button>" +
+    "<button type='button' onclick='getBookData()'>Przejdź do wykresów</button>" +
     "</div>";
 
-    $("#chart").css("display", "none");
-    $("#data").html(list);
+    $("#chartDiv").css("display", "none");
+    $("#dataDiv").html(list);
 }
 
 
 
-function show_table(){
+function generateTable(){
+    /* Generowanie tabeli z informacjami o książkach */
+
     let list = "<div class='data_table'>" +
     "<h2>Dane online:</h2>" +
     "<table><tr><th>Data</th><th>Godzina</th><th>Tytył</th><th>Autor</th></tr>";
@@ -225,21 +201,22 @@ function show_table(){
             response.forEach((item) => {
                 list = list + "<tr><th>" + item.data + '</th><th>' + item.czas + '</th><th>' + item.tytul + '</th><th>' + item.autor + '</th></tr>';
             })
-            alert("Udało się pozyskać dane!");
             list = list + "</table></div>"
-            $("#data").html(list);
+            $("#dataDiv").html(list);
         },
         error : function() {
-            alert("Wystąpił błąd przy próbie uzyskania danych.");
+            alert("Wystąpił błąd przy pozyskiwaniu danych z bazy!");
         }
     })
 }
 
 var months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
  
-function draw_data(){
+function getBookData(){
+    /* Pobranie danych o książkach */
+
     let list = "<div class='data_table'>" +
-    "<button type='button' onclick='generate_chart(months)'>Generuj wykres</button>" +
+    "<button type='button' onclick='generateChart(months)'>Generuj wykres miesięcznych dostaw</button>" +
     "</div>";
 
     $.ajax({
@@ -252,16 +229,17 @@ function draw_data(){
                 months[date.getMonth()] += 1;
                 hours[parseInt(item.czas.substring(0, 2))] += 1;
             })
-            alert("Udało się załadować dane");
         }
     })
 
     
-   $("#data").html(list);
+   $("#dataDiv").html(list);
 }
 
-function generate_chart(months){
-    $("#data").html("");
+function generateChart(months){
+    /* Generowanie wykresu książek dostarczonych w danym miesiącu */
+
+    $("#dataDiv").html("");
 
     var chart = new CanvasJS.Chart("chart", {
 
@@ -270,7 +248,9 @@ function generate_chart(months){
         title: {
             text : "Ilosc dostarczonych ksiazek w danym miesiacu"
         },
-
+        axisX:{
+            title: "Miesiace"
+        },
         axisY: {
             title: "Ilosc"
         },
@@ -296,16 +276,14 @@ function generate_chart(months){
         }]
     });
 
-    $("#chart").css("display", "block");
+    $("#chartDiv").css("display", "block");
     chart.render();
 }
 
 
+function logOut(){
+    /* Wylogowanie się użytkownika */
 
-
-/* Logowanie i wylogowywanie sie z systemu */
-
-function logout_user(){
     var session_id = get_cookies();
     var data = {};
     data.sessionID = session_id;
@@ -328,37 +306,43 @@ function logout_user(){
         }
     })
 
-    $("#chart").css("display", "none");
+    $("#chartDiv").css("display", "none");
 }
 
 
-function login_form(){
+function loginForm(){
+    /* Formularz logowania się użytkownika */
 
     if(!navigator.onLine){
         alert("Brak połączenia z internetem");
     }
 
-    let form_html = "<form class='input'>" +
+    let form_html = "<form class='input' style=' position: fixed;top: 50%;left: 50%; -webkit-transform: translate(-50%, -50%);  transform: translate(-50%, -50%);'><h3 style='text-align: center;'>" +
+    "<h3>Zaloguj się</h3>"+
     "<input type='text' name='login' placeholder='login' required><br>" +
     "<input type='password' name='password' placeholder='haslo' required><br>" +
     "<input type='button' value='Zaloguj' onclick='log_user(this.form)'>" +
     "</form>"
-    $("#data").html(form_html);
+    $("#dataDiv").html(form_html);
 }
 
-function register_form(){
-    let form_html = "<form class='input'>" +
+function registerForm(){
+    /* Formularz do rejestracji użytkownika*/
+
+    let form_html = "<form class='input' style=' position: fixed;top: 50%;left: 50%; -webkit-transform: translate(-50%, -50%);  transform: translate(-50%, -50%);'><h3 style='text-align: center;'>" +
+    "<h3>Zarejestruj się</h3>"+
     "<input type='text' name='login' placeholder='login' required><br>" +
     "<input type='password' name='password' placeholder='haslo' required><br>" +
-    "<input type='button' value='Rejestracja' onclick='add_user(this.form)'>" +
+    "<input type='button' value='Rejestracja' onclick='newUser(this.form)'>" +
     "</form>"
-    $("#data").html(form_html);
+    $("#dataDiv").html(form_html);
 }
 
 
-function add_user(form){
+function newUser(form){
+    /* Dodanie użytkownika do bazy */
 
-    if(check_registration_form(form)){
+    if(registerValidation(form)){
         var user_data = {}
         user_data.username = form.login.value
         user_data.password = form.password.value
@@ -368,15 +352,14 @@ function add_user(form){
             url : "http://pascal.fis.agh.edu.pl/~8luka/projekt2/rest/register",
             data : data_to_send,
             success : function(response) {
-                //alert(response);
                 if (response["status"] == "ok") {
-                    alert("Zarejstrowano użytkownika!");
+                    alert("Zarejstrowano pomyślnie!");
                 } else {
                     alert(response["msg"]);
                 }
             },
             error : function() {
-                alert("Wystąpił błąd przy tworzeniu XMLHttpRequest");
+                alert("Wystąpił błąd przy rejestracji");
             }
         })
     }
@@ -384,7 +367,7 @@ function add_user(form){
 
 
 function log_user(form){
-    if(check_registration_form(form)){
+    if(registerValidation(form)){
         var user_data = {};
         user_data.username = form.login.value;
         user_data.password = form.password.value;
@@ -395,7 +378,6 @@ function log_user(form){
             data: data_to_send,
             success : function(response){
                 if(response["status"] == "ok"){
-                    alert("Użytkownik zalogowany!");
                     onlineMenu();
                     clear_local_database();
                     set_cookies(response["sessionID"]);
@@ -413,34 +395,32 @@ function log_user(form){
 
 
 function onlineMenu(){
-    $("#offline_data_button").css("display", "none");
-    $("#show_offline_button").css("display", "none");
-    $("#log_button").css("display", "none");
-    $("#register_button").css("display", "none");
-    $("#show_data_button").css("display", "inline");
-    $("#online_data_button").css("display", "inline");
-    //$("#synchronise_button").css("display", "inline");
-    $("#logout_button").css("display", "inline");
-    $("#data").html("");
+    $("#btnOfflineData").css("display", "none");
+    $("#btnOfflineShow").css("display", "none");
+    $("#btnLogin").css("display", "none");
+    $("#btnRegister").css("display", "none");
+    $("#btnOnlineShow").css("display", "inline");
+    $("#btnOnlineData").css("display", "inline");
+    $("#btnLogout").css("display", "inline");
+    $("#dataDiv").html("");
 }
 
 
 function offlineMenu(){
-    $("#offline_data_button").css("display", "inline");
-    $("#show_offline_button").css("display", "inline");
-    $("#log_button").css("display", "inline");
-    $("#register_button").css("display", "inline");
-    $("#show_data_button").css("display", "none");
-    $("#online_data_button").css("display", "none");
-    //$("#synchronise_button").css("display", "none");
-    $("#logout_button").css("display", "none");
-    $("#data").html("");
+    $("#btnOfflineData").css("display", "inline");
+    $("#btnOfflineShow").css("display", "inline");
+    $("#btnLogin").css("display", "inline");
+    $("#btnRegister").css("display", "inline");
+    $("#btnOnlineShow").css("display", "none");
+    $("#btnOnlineData").css("display", "none");
+    $("#btnLogout").css("display", "none");
+    $("#dataDiv").html("");
 }
 
 
-function check_registration_form(form) {
+function registerValidation(form) {
     if (form.login.value == "" || form.password.value == "") {
-        alert("Wypełnij wszystkie pola");
+        alert("Wypełnij wszystkie pola!");
         return false;
     }
     if (form.login.value.length <= 1 || form.password.value.length <= 5) {
@@ -453,18 +433,20 @@ function check_registration_form(form) {
 
 function updateStatus(event) {
 
-    var status_text = document.getElementById("status_info");
+    var status_text = document.getElementById("statusInfo");
 
     if (navigator.onLine) {
-        status_text.innerHTML = "Połączono z internetem!.";
+        status_text.innerHTML = "Połączono z internetem.";
+        $("#statusInfo").css("background-color","green");
     } else {
-        status_text.innerHTML = "Brak połączenia internetowego!";
+        status_text.innerHTML = "Brak połączenia internetowego.";
+        $("#statusInfo").css("background-color","red");
     }
 }
 
 
 
-function create_cookies() {
+function createCookies() {
     let array = {};
     let session_id = get_cookies();
     alert("SessionID: " + session_id);
@@ -537,6 +519,6 @@ function clear_local_database() {
             cursor.continue();
         }
     }
-    alert("Zsynchronizowano dane");
+   
 }
 
