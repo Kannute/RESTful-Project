@@ -284,7 +284,7 @@ function generateChart(months){
 function logOut(){
     /* Wylogowanie się użytkownika */
 
-    var session_id = get_cookies();
+    var session_id = getCookies();
     var data = {};
     data.sessionID = session_id;
     dane = JSON.stringify(data);
@@ -298,7 +298,7 @@ function logOut(){
             if (response["status"] == "ok") {
                 alert("Wylogowano użytkownika");
                 offlineMenu();
-                set_cookies('');
+                setCookies('');
             } else {
                 alert(response);
                 alert(response["msg"]);
@@ -321,7 +321,7 @@ function loginForm(){
     "<h3>Zaloguj się</h3>"+
     "<input type='text' name='login' placeholder='login' required><br>" +
     "<input type='password' name='password' placeholder='haslo' required><br>" +
-    "<input type='button' value='Zaloguj' onclick='log_user(this.form)'>" +
+    "<input type='button' value='Zaloguj' onclick='userLogin(this.form)'>" +
     "</form>"
     $("#dataDiv").html(form_html);
 }
@@ -366,8 +366,9 @@ function newUser(form){
 }
 
 
-function log_user(form){
+function userLogin(form){
     if(registerValidation(form)){
+
         var user_data = {};
         user_data.username = form.login.value;
         user_data.password = form.password.value;
@@ -379,8 +380,8 @@ function log_user(form){
             success : function(response){
                 if(response["status"] == "ok"){
                     onlineMenu();
-                    clear_local_database();
-                    set_cookies(response["sessionID"]);
+                    localDBSync();
+                    setCookies(response["sessionID"]);
                 }else{
                     alert(response["msg"]);
                 }
@@ -448,8 +449,7 @@ function updateStatus(event) {
 
 function createCookies() {
     let array = {};
-    let session_id = get_cookies();
-    alert("SessionID: " + session_id);
+    let session_id = getCookies();
     array.sessionID = session_id;
     data_to_send = JSON.stringify(array);
     $.ajax({
@@ -466,18 +466,18 @@ function createCookies() {
             }
         },
         error : function() {
-            console.log("Failed to create cookies");
+            alert("Blad przy tworzeniu ciasteczek")
         }
     })
 }
 
 
-function set_cookies(value) {
+function setCookies(value) {
     document.cookie = "sessionID=" + value + "; path=/";
 }
 
 
-function get_cookies() {
+function getCookies() {
 
     let tmp;
     let browser_cookies = document.cookie.split(';');
@@ -495,7 +495,7 @@ function get_cookies() {
     return "";
 }
 
-function clear_local_database() {
+function localDBSync() {
     var count = 0;
     var trans = db.transaction("ksiazka", "readwrite");
     var storage = trans.objectStore("ksiazka");
