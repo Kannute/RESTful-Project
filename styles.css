@@ -4,7 +4,7 @@ html {
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    /*background-image: url("/images/bgimg.jpg");*/
+    /*background-image: url("/images/bgimg.jpg"); -> nie działa na pascalu :( */
     background: rgb(177,203,179);
     background: linear-gradient(90deg, rgba(177,203,179,1) 0%, rgba(164,173,132,1) 21%, rgba(130,105,105,1) 100%); 
     font-size: large;
