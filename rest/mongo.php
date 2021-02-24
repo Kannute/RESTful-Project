@@ -6,10 +6,10 @@ ini_set('display_errors', 'on');
 
 
 class db{
-    private $user = "8luka";
-    private $pass = "pass8luka";
-    private $host = "172.20.44.25";
-    private $base = "8luka";
+    private $user = "username";
+    private $pass = "password";
+    private $host = "host_ip_no";
+    private $base = "userBase";
     private $dataCollName = "ksiazka";
     private $userCollName = "users";
     private $sessionCollName = "session";
